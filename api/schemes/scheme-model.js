@@ -32,7 +32,6 @@ async function findById(scheme_id) { // EXERCISE B
   .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
   .where('sc.scheme_id', scheme_id)
   .orderBy('st.step_number', 'asc')
-  console.log(data)
   return data
   /*
     1B- Study the SQL query below running it in SQLite Studio against `data/schemes.db3`:
@@ -108,7 +107,6 @@ async function findSteps(scheme_id) { // EXERCISE C
   .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
   .where('sc.scheme_id', scheme_id)
   .orderBy('st.step_number', 'asc')
-  console.log(data)
   return data
   /*
     1C- Build a query in Knex that returns the following data.
@@ -134,17 +132,13 @@ async function findSteps(scheme_id) { // EXERCISE C
 
 async function add(scheme) { // EXERCISE D
   return await db('schemes').insert(scheme).then(id => {
-    console.log(...id)
   return findById(...id)
   })
 }
 
-function addStep(scheme_id, step) { // EXERCISE E
-  /*
-    1E- This function adds a step to the scheme with the given `scheme_id`
-    and resolves to _all the steps_ belonging to the given `scheme_id`,
-    including the newly created one.
-  */
+async function addStep(scheme_id, step) { // EXERCISE E
+  await db('steps').insert({...step,scheme_id})
+  return await findSteps(scheme_id)
 }
 
 module.exports = {
